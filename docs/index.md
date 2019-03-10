@@ -9,6 +9,10 @@ This repo contains a collection of [Metasploit](https://www.metasploit.com/) mod
 * [Total.js < 3.2.4 Directory Traversal (CVE-2019-8903)](./totaljs_traversal.html)
 * Samsung SmartTV scanner
 
+# Papers, articles and resources
+
+* [Total.js Directory Traversal: try this at home!](./totaljs-directory-traversal-try-this-at-home.html)
+
 # How to
 
 Cloning the repo
