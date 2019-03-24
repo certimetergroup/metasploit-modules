@@ -20,7 +20,7 @@ This repo contains a collection of [Metasploit](https://www.metasploit.com/) mod
 Cloning the repo
 
 ```
-git clone https://github.com/fabiocogno/metasploit-modules.git
+git clone https://github.com/certimetergroup/metasploit-modules.git
 ```
 
 Copy the content to the local Metasploit directory
