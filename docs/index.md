@@ -8,12 +8,14 @@ This repo contains a collection of [Metasploit](https://www.metasploit.com/) mod
 
 * [Total.js < 3.2.4 Directory Traversal (CVE-2019-8903)](./totaljs_traversal.html)
 * [CMS Made Simple (CMSMS) Showtime2 < 3.6.3 File Upload RCE (CVE-2019-9692)](./cmsms_showtime2_rce.html)
+* [Pimcore from 4.0.0 to 5.6.6 Unserialize RCE (CVE-2019-10867)](./pimcore_unserialize_rce.html)
 * Samsung SmartTV scanner
 
 # Papers, articles and resources
 
 * [Total.js Directory Traversal: try this at home!](./totaljs-directory-traversal-try-this-at-home.html)
 * [Total.js Directory Traversal: now part of Rapid7/Metasploit](https://blog.rapid7.com/2019/03/15/metasploit-wrap-up-8/)
+* [CMS Made Simple (CMSMS) Showtime2 File Upload RCE: now part of Rapid7/Metasploit](https://blog.rapid7.com/2019/03/29/metasploit-wrap-up-10/)
 
 # How to
 

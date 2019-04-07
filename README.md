@@ -7,6 +7,8 @@ This repo contains a collection of [Metasploit](https://www.metasploit.com/) mod
 # Included modules
 
 * Total.js < 3.2.4 Directory Traversal (CVE-2019-8903)
+* CMS Made Simple (CMSMS) Showtime2 < 3.6.3 File Upload RCE (CVE-2019-9692)
+* Pimcore from 4.0.0 to 5.6.6 Unserialize RCE (CVE-2019-10867)
 * Samsung SmartTV scanner
 
 # How to
@@ -14,7 +16,7 @@ This repo contains a collection of [Metasploit](https://www.metasploit.com/) mod
 Cloning the repo
 
 ```
-git clone https://github.com/fabiocogno/metasploit-modules.git
+git clone https://github.com/certimetergroup/metasploit-modules.git
 ```
 
 Copy the content to the local Metasploit directory
