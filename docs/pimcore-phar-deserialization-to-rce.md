@@ -71,7 +71,7 @@ Let's create a Phar file and add an object with some data as meta data:
 
 Our newly created `test.phar` file now has the following content. We can see that our object was stored as a serialized string.
 
-![Hex view of the created Phar file](./assets/hex01.png)
+![Hex view of the created Phar file](./assets/img/hex01.png)
 
 #### PHP Object Injection
 
